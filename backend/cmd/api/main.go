@@ -9,6 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type healthResponse struct {
+	Status  string `json:"status"`
+	Service string `json:"service"`
+}
+
+func handleHealth(c *gin.Context) {
+	response := healthResponse{
+		Status:  "ok",
+		Service: "expiry-api",
+	}
+	c.JSON(http.StatusOK, response)
+}
+
 func main() {
 	address := os.Getenv("API_ADDR")
 	if address == "" {
@@ -16,9 +29,7 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.GET("/api/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "ok", "service": "expiry-api"})
-	})
+	router.GET("/api/health", handleHealth)
 
 	server := &http.Server{
 		Addr:              address,
